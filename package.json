@@ -1,0 +1,20 @@
+{
+  "name": "imgdiff",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "bin": {
+    "imgdiff": "./main.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "get-uri": "^3.0.2",
+    "pixelmatch": "^5.2.1",
+    "pngjs": "^5.0.0",
+    "yargs": "^16.0.3"
+  }
+}
