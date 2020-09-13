@@ -1,0 +1,1 @@
+node main.js --batch=true --A=s3://remote1 --B=s3://remote2 --s3AccessKey=<KEY> --s3SecretKey=<SECRET> --s3EndPoint=ceph.squarespace.net --silent=false --jsonReport=results.ignore.json --write --diff="[name]--results.png"

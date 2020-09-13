@@ -1,0 +1,549 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`imgdiff should call BATCH differ on file:// A,B locations  1`] = `
+Object {
+  "BufferDiff": Object {
+    "data": Array [
+      95,
+      95,
+      100,
+      97,
+      116,
+      97,
+      95,
+      100,
+      105,
+      102,
+      102,
+      95,
+      95,
+    ],
+    "type": "Buffer",
+  },
+  "match": true,
+  "pixels": 0,
+}
+`;
+
+exports[`imgdiff should call BATCH differ on file:// A,B locations  2`] = `
+Array [
+  Array [
+    "Batch file system processing for for file://dirA_1",
+  ],
+  Array [
+    "Batch file system processing for for file:///TestFileSystemPath/dirB_2",
+  ],
+  Array [
+    "
+🔄 Processing:
+    Key: file1
+    A: file:///dirA_1/file1.png 
+    B: file:///TestFileSystemPath/dirB_2/file1.png
+  ",
+  ],
+  Array [
+    "✅ Result:
+    match: true
+    pixels: 0
+
+  ",
+  ],
+  Array [
+    "
+🔄 Processing:
+    Key: file2
+    A: file:///dirA_1/file2.png 
+    B: file:///TestFileSystemPath/dirB_2/file2.png
+  ",
+  ],
+  Array [
+    "✅ Result:
+    match: true
+    pixels: 0
+
+  ",
+  ],
+  Array [
+    "📊 Batch Total Report
+    match: ['file1',
+           'file2']
+    diff: []
+    removed: []
+    new: []
+
+ 👉 written to: test_json_report.json
+  ",
+  ],
+]
+`;
+
+exports[`imgdiff should call BATCH differ on file:// A,B locations  3`] = `
+Array [
+  Array [
+    "file://dirA_1",
+  ],
+  Array [
+    "file:///TestFileSystemPath/dirB_2",
+  ],
+  Array [
+    "file:///dirA_1/file1.png",
+  ],
+  Array [
+    "file:///dirA_1/file2.png",
+  ],
+  Array [
+    "file:///TestFileSystemPath/dirB_2/file1.png",
+  ],
+  Array [
+    "file:///TestFileSystemPath/dirB_2/file2.png",
+  ],
+]
+`;
+
+exports[`imgdiff should call BATCH differ on file:// A,B locations  4`] = `
+Array [
+  Array [
+    "file://dirA_1",
+  ],
+  Array [
+    "file:///TestFileSystemPath/dirB_2",
+  ],
+  Array [
+    "file:///dirA_1/file1.png",
+  ],
+  Array [
+    "file:///dirA_1/file2.png",
+  ],
+  Array [
+    "file:///TestFileSystemPath/dirB_2/file1.png",
+  ],
+  Array [
+    "file:///TestFileSystemPath/dirB_2/file2.png",
+  ],
+]
+`;
+
+exports[`imgdiff should call BATCH differ on file:// A,B locations  5`] = `
+Map {
+  "file1" => URIHandle {
+    "basename": "file1.png",
+    "keyname": "file1",
+    "path": "/dirA_1/file1.png",
+    "uri": "file:///dirA_1/file1.png",
+  },
+  "file2" => URIHandle {
+    "basename": "file2.png",
+    "keyname": "file2",
+    "path": "/dirA_1/file2.png",
+    "uri": "file:///dirA_1/file2.png",
+  },
+}
+`;
+
+exports[`imgdiff should call BATCH differ on file:// A,B locations  6`] = `
+Map {
+  "file1" => URIHandle {
+    "basename": "file1.png",
+    "keyname": "file1",
+    "path": "/TestFileSystemPath/dirB_2/file1.png",
+    "uri": "file:///TestFileSystemPath/dirB_2/file1.png",
+  },
+  "file2" => URIHandle {
+    "basename": "file2.png",
+    "keyname": "file2",
+    "path": "/TestFileSystemPath/dirB_2/file2.png",
+    "uri": "file:///TestFileSystemPath/dirB_2/file2.png",
+  },
+}
+`;
+
+exports[`imgdiff should call BATCH differ on file:// A,B locations  7`] = `
+Object {
+  "diff": Array [],
+  "match": Array [
+    Object {
+      "bucket": undefined,
+      "keyname": "file1",
+      "path": "/dirA_1/file1.png",
+      "pixels": 0,
+      "uri": "file:///dirA_1/file1.png",
+    },
+    Object {
+      "bucket": undefined,
+      "keyname": "file2",
+      "path": "/dirA_1/file2.png",
+      "pixels": 0,
+      "uri": "file:///dirA_1/file2.png",
+    },
+  ],
+  "new": Array [],
+  "removed": Array [],
+}
+`;
+
+exports[`imgdiff should call BATCH differ on file:// A,B locations  8`] = `
+Array [
+  "/TestFileSystemPath/test_json_report.json",
+  "{
+    \\"new\\": [],
+    \\"diff\\": [],
+    \\"match\\": [
+        {
+            \\"uri\\": \\"file:///dirA_1/file1.png\\",
+            \\"keyname\\": \\"file1\\",
+            \\"path\\": \\"/dirA_1/file1.png\\",
+            \\"pixels\\": 0
+        },
+        {
+            \\"uri\\": \\"file:///dirA_1/file2.png\\",
+            \\"keyname\\": \\"file2\\",
+            \\"path\\": \\"/dirA_1/file2.png\\",
+            \\"pixels\\": 0
+        }
+    ],
+    \\"removed\\": []
+}",
+]
+`;
+
+exports[`imgdiff should call BATCH differ on file:// and s3:// A,B locations and snapshots do not match  1`] = `
+[MockFunction] {
+  "calls": Array [
+    Array [
+      Object {
+        "data": Array [
+          95,
+          95,
+          100,
+          97,
+          116,
+          97,
+          95,
+          97,
+          95,
+          95,
+        ],
+        "type": "Buffer",
+      },
+    ],
+    Array [
+      Object {
+        "data": Array [
+          95,
+          95,
+          100,
+          97,
+          116,
+          97,
+          95,
+          97,
+          95,
+          95,
+        ],
+        "type": "Buffer",
+      },
+    ],
+    Array [
+      Object {
+        "data": Array [
+          95,
+          95,
+          100,
+          97,
+          116,
+          97,
+          95,
+          98,
+          95,
+          95,
+        ],
+        "type": "Buffer",
+      },
+    ],
+    Array [
+      Object {
+        "data": Array [
+          95,
+          95,
+          100,
+          97,
+          116,
+          97,
+          95,
+          98,
+          95,
+          95,
+        ],
+        "type": "Buffer",
+      },
+    ],
+  ],
+  "results": Array [
+    Object {
+      "type": "return",
+      "value": Object {
+        "data": "__data_a__",
+        "height": 1,
+        "width": 1,
+      },
+    },
+    Object {
+      "type": "return",
+      "value": Object {
+        "data": "__data_b__",
+        "height": 1,
+        "width": 1,
+      },
+    },
+    Object {
+      "type": "return",
+      "value": Object {
+        "data": "__data_a__",
+        "height": 1,
+        "width": 1,
+      },
+    },
+    Object {
+      "type": "return",
+      "value": Object {
+        "data": "__data_b__",
+        "height": 1,
+        "width": 1,
+      },
+    },
+  ],
+}
+`;
+
+exports[`imgdiff should call BATCH differ on file:// and s3:// A,B locations and snapshots do not match  2`] = `
+Object {
+  "diff": Array [
+    Object {
+      "bucket": undefined,
+      "keyname": "file1",
+      "path": "/dir1/file1.png",
+      "pixels": 32,
+      "uri": "file:///dir1/file1.png",
+    },
+    Object {
+      "bucket": undefined,
+      "keyname": "file2",
+      "path": "/dir1/file2.png",
+      "pixels": 32,
+      "uri": "file:///dir1/file2.png",
+    },
+  ],
+  "match": Array [],
+  "new": Array [],
+  "removed": Array [],
+}
+`;
+
+exports[`imgdiff should call BATCH differ on file:// and s3:// A,B locations and snapshots match  1`] = `
+[MockFunction] {
+  "calls": Array [
+    Array [
+      Object {
+        "data": Array [
+          95,
+          95,
+          100,
+          97,
+          116,
+          97,
+          95,
+          97,
+          95,
+          95,
+        ],
+        "type": "Buffer",
+      },
+    ],
+    Array [
+      Object {
+        "data": Array [
+          95,
+          95,
+          100,
+          97,
+          116,
+          97,
+          95,
+          97,
+          95,
+          95,
+        ],
+        "type": "Buffer",
+      },
+    ],
+    Array [
+      Object {
+        "data": Array [
+          95,
+          95,
+          100,
+          97,
+          116,
+          97,
+          95,
+          98,
+          95,
+          95,
+        ],
+        "type": "Buffer",
+      },
+    ],
+    Array [
+      Object {
+        "data": Array [
+          95,
+          95,
+          100,
+          97,
+          116,
+          97,
+          95,
+          98,
+          95,
+          95,
+        ],
+        "type": "Buffer",
+      },
+    ],
+  ],
+  "results": Array [
+    Object {
+      "type": "return",
+      "value": Object {
+        "data": "__data_a__",
+        "height": 1,
+        "width": 1,
+      },
+    },
+    Object {
+      "type": "return",
+      "value": Object {
+        "data": "__data_b__",
+        "height": 1,
+        "width": 1,
+      },
+    },
+    Object {
+      "type": "return",
+      "value": Object {
+        "data": "__data_a__",
+        "height": 1,
+        "width": 1,
+      },
+    },
+    Object {
+      "type": "return",
+      "value": Object {
+        "data": "__data_b__",
+        "height": 1,
+        "width": 1,
+      },
+    },
+  ],
+}
+`;
+
+exports[`imgdiff should call BATCH differ on file:// and s3:// A,B locations and snapshots match  2`] = `
+Object {
+  "diff": Array [],
+  "match": Array [
+    Object {
+      "bucket": undefined,
+      "keyname": "file1",
+      "path": "/dir1/file1.png",
+      "pixels": 0,
+      "uri": "file:///dir1/file1.png",
+    },
+    Object {
+      "bucket": undefined,
+      "keyname": "file2",
+      "path": "/dir1/file2.png",
+      "pixels": 0,
+      "uri": "file:///dir1/file2.png",
+    },
+  ],
+  "new": Array [],
+  "removed": Array [],
+}
+`;
+
+exports[`imgdiff should call SINGLE differ on A,B file set 1`] = `
+[MockFunction] {
+  "calls": Array [
+    Array [
+      Object {
+        "data": Array [
+          95,
+          95,
+          100,
+          97,
+          116,
+          97,
+          95,
+          97,
+          95,
+          95,
+        ],
+        "type": "Buffer",
+      },
+    ],
+    Array [
+      Object {
+        "data": Array [
+          95,
+          95,
+          100,
+          97,
+          116,
+          97,
+          95,
+          98,
+          95,
+          95,
+        ],
+        "type": "Buffer",
+      },
+    ],
+  ],
+  "results": Array [
+    Object {
+      "type": "return",
+      "value": Object {
+        "data": "__data_a__",
+        "height": 1,
+        "width": 1,
+      },
+    },
+    Object {
+      "type": "return",
+      "value": Object {
+        "data": "__data_b__",
+        "height": 1,
+        "width": 1,
+      },
+    },
+  ],
+}
+`;
+
+exports[`imgdiff should parse cli options 1`] = `
+Object {
+  "A": "/some test dir",
+  "B": "/some_test_dir",
+  "batch": false,
+  "diff": "[name].diff.png",
+  "exitCode": true,
+  "jsonReport": "test_json_report.json",
+  "s3AccessKey": "ak__",
+  "s3EndPoint": "ceph.squarespace.net",
+  "s3SecretKey": "sk__",
+  "silent": true,
+  "threshold": 0.1,
+  "useSSL": false,
+}
+`;

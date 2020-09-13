@@ -1,63 +1,119 @@
 #!/usr/bin/env node
-
-const fs = require("fs");
-const PNG = require("pngjs").PNG;
+const fs = require("./fs");
 const path = require("path");
-const pixelmatch = require("pixelmatch");
-const getUri = require("get-uri");
+const { URIHandle } = require("./differ");
+const DIFFER = require("./differ");
+const { tryParse, diffName, isS3URI, writeFile } = require("./helpers");
+const { log } = require("./helpers");
+const DIR = { __dirname: process.cwd() };
 
-function streamToBuffer(stream) {
-  let chunks = [];
-  return new Promise((rs, rj) => {
-    stream.once("end", () => rs(Buffer.concat(chunks)));
-    stream.once("error", (err) => rj(err));
-    stream.on("data", (chunk) => chunks.push(chunk));
-  });
-}
+exports.DIR = DIR;
+// process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
-async function main(
-  _config = {
-    diff: "[name].diff.png",
-    silent: true,
-  }
-) {
+const defaultConfig = {
+  diff: "[name].diff.png",
+  write: false,
+  jsonReport: "",
+  A: "",
+  B: "",
+  s3EndPoint: "ceph.squarespace.net",
+  s3AccessKey: process.env.S3_ACCESS_KEY || "",
+  s3SecretKey: process.env.S3_SECRET_KEY || "",
+  exitCode: true,
+  useSSL: false,
+  threshold: 0.1,
+  batch: false,
+  silent: true,
+};
+
+function parseCLI(args = process.argv) {
   const config = {
-    ..._config,
-    ...process.argv
+    ...args
       .map((a) => a.trim())
-      .map((d) => (d.match(/--([\w|-|_]+?)=(.+)/) || []).slice(1, 3))
-      .filter((arg) => !!arg.length)
-      .reduce((p, [k, v]) => ({ ...p, [k]: v }), {}),
+      .map((d) => (d.match(/^--([\w|\-|_]+?)=(.+)/) || []).slice(1, 3))
+      .reduce((p, [k, v]) => (k ? { ...p, [k]: tryParse(v) } : p), {}),
+    ...args
+      .map((a) => a.trim())
+      .map((d) => (d.match(/^--([\w|\-|_]+?)$/) || []).slice(1))
+      .reduce((p, [k]) => (k ? { ...p, [k]: true } : p), {}),
   };
+  return config;
+}
+exports.parseCLI = parseCLI;
+function protocolify(p) {
+  if (!/^[\w]+?:\/\//.test(p)) return `file://${path.join(DIR.__dirname, p)}`;
+  return p;
+}
 
-  const log = config.silent !== "false" ? () => {} : console.log.bind(console);
-  ["A", "B"].forEach((key) => {
-    if (!config[key])
-      throw new Error(` '${key}' not specified, use ${key}=<uri>`);
-    if (!/[a-z]+?:\/\//.test(config[key])) {
-      config[key] = `file://${path.join(__dirname, config[key])}`.replace(
-        ":///",
-        "://"
-      );
+async function exec(_config = {}) {
+  const config = {
+    ...defaultConfig,
+    ..._config,
+  };
+  log.silent(!!_config.silent);
+
+  //make sense of cli params, coercing to file:// as protocol default
+  for (const key of ["A", "B"]) {
+    if (!config[key]) {
+      throw new Error(` '${key}' not specified, use --${key}=<uri>`);
     }
-  });
-
-  log(`Parsing A: ${config.A} ...`);
-  const A = PNG.sync.read(await streamToBuffer(await getUri(config.A)));
-  log(`Parsing B: ${config.A} ...`);
-  const B = PNG.sync.read(await streamToBuffer(await getUri(config.B)));
-  const { width, height } = A;
-  const diff = new PNG({ width, height });
-  const AName = config.A.split("/").slice(-1)[0].split(".png")[0];
-  if (config.diff.includes("[name]")) {
-    config.diff = config.diff.replace("[name]", AName);
+    config[key] = protocolify(config[key]);
   }
-  pixelmatch(A.data, B.data, diff.data, width, height, { threshold: 0 });
-  log(`Saving output: ${config.diff}`);
-  fs.writeFileSync(config.diff, PNG.sync.write(diff));
+  if (config.write && typeof config.write === "string") {
+    config.write = protocolify(config.write);
+  }
+  return config.batch ? runBatch(config) : runSingle(config);
 }
 
-if (require.main === module) {
-  main();
+async function runBatch(config) {
+  const getkeynames = (handles) =>
+    handles.map((h) => `'${h.keyname}'`).join(",\n           ");
+  const report = await DIFFER.batchProcess(config);
+  log.info(`📊 Batch Total Report
+    match: [${getkeynames(report.match)}]
+    diff: [${getkeynames(report.diff)}]
+    removed: [${getkeynames(report.removed)}]
+    new: [${getkeynames(report.new)}]
+
+ ${config.jsonReport ? `👉 written to: ${config.jsonReport}` : ""}
+  `);
+  if (config.jsonReport) {
+    const reportString = JSON.stringify(report, null, 4);
+    // fs.writeFile(config.jsonReport,reportString);
+    await writeFile(protocolify(config.jsonReport), reportString, config);
+  }
+  return report;
 }
-module.exports = main;
+
+async function runSingle(config) {
+  if (isS3URI(config.A) || isS3URI(config.B)) {
+    throw new Error("Single can only be ran locally");
+  }
+  const HandleA = new URIHandle(config.A);
+  const HandleB = new URIHandle(config.B);
+  const { BufferDiff } = await DIFFER.differ({
+    ...config,
+    HandleA,
+    HandleB,
+  });
+  if (config.write) {
+    const outName = diffName(config.diff, HandleA.basename);
+    log(`Writing to: ${outName}`);
+    fs.writeFileSync(outName, BufferDiff);
+  }
+}
+
+exports.runSingle = runSingle;
+
+process.on("unhandledRejection", (error) => {
+  // Will print "unhandledRejection err is not defined"
+  console.error("unhandledRejection", error);
+});
+
+//---------------------------------------------
+
+// @ts-ignore
+if (require.main === module) {
+  exec({ ...parseCLI(), silent: false });
+}
+exports.exec = exec;
