@@ -73,7 +73,7 @@ function recurseDir(dir) {
     );
 }
 
-async function writeFile(uriPath, content, config, huh) {
+async function writeFile(uriPath, content, config) {
   if (isFileURI(uriPath)) {
     fs.writeFileSync(furi.fileUriToPath(uriPath), content);
   }
@@ -92,10 +92,11 @@ async function writeFile(uriPath, content, config, huh) {
       accessKey: config.s3AccessKey,
       secretKey: config.s3SecretKey,
     });
-    await minioClient.putObject(bucket, dir, content, {
+    let opts = {
       "x-amz-acl": "public-read",
-      "Content-Type": contentType,
-    });
+      ...(contentType ? { "Content-Type": contentType } : {}),
+    };
+    await minioClient.putObject(bucket, dir, content, opts);
   }
 }
 
