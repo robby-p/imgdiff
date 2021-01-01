@@ -104,7 +104,8 @@ class URIHandle extends Handle {
   }
   async fetch() {
     try {
-      return await streamToBuffer(await GURI.getUri(this.uri));
+      this.buffer = await streamToBuffer(await GURI.getUri(this.uri));
+      return this.buffer;
     } catch (e) {
       if (e.code === "EISDIR") {
         throw new Error(
@@ -124,7 +125,10 @@ class S3Handle extends Handle {
     this.path = pathSplit.join("/");
   }
   async fetch() {
-    return streamToBuffer(await this.client.getObject(this.bucket, this.path));
+    this.buffer = await streamToBuffer(
+      await this.client.getObject(this.bucket, this.path)
+    );
+    return this.buffer;
   }
 }
 class S3Batch extends BaseBatchFiles {
@@ -177,6 +181,14 @@ async function batchProcess(config) {
     removed: [],
   };
 
+  const saveImg = async (name, buffer) => {
+    const fullPath = `${config.write.replace(/\/$/, "")}/${name.replace(
+      /^\//,
+      ""
+    )}`;
+    log.info(`Saving ${name} to ${fullPath}`);
+    await writeFile(fullPath, buffer, config);
+  };
   const [CollectionA, CollectionB] = await Promise.all(
     ["A", "B"].map(async (k) => {
       return BatchFilesFactory(config[k], config).hydrate();
@@ -193,6 +205,10 @@ async function batchProcess(config) {
     if (!CollectionB.has(key)) {
       // log.info(`Unsymmetrical file found ${key}`);
       report.new.push(HandleA.serialize());
+
+      if (config.write) {
+        await saveImg(HandleA.basename, HandleA.buffer);
+      }
     } else {
       const HandleB = CollectionB.get(key);
       const { BufferDiff, match, pixels } = await Differ.differ({
@@ -203,12 +219,7 @@ async function batchProcess(config) {
       if (!match) {
         if (config.write && config.diff) {
           const diffFileName = diffName(config.diff, HandleA.basename);
-          const fullPath = `${config.write.replace(
-            /\/$/,
-            ""
-          )}/${diffFileName.replace(/^\//, "")}`;
-          log.info(`Uploading ${diffFileName} to ${fullPath}`);
-          await writeFile(fullPath, BufferDiff, config);
+          await saveImg(diffFileName, BufferDiff);
         }
         report.diff.push({ ...HandleA.serialize(), pixels });
       } else {

@@ -69,6 +69,44 @@ describe("recurseDir", function () {
   });
 });
 
+describe("writeFile", function () {
+  it("should write file system file", function () {
+    fs.writeFileSync = jest.fn();
+    helpers.writeFile(imgdiff.protocolify("./file.png"), "<content>");
+    helpers.writeFile(imgdiff.protocolify("./file.json"), "<content>");
+    helpers.writeFile(imgdiff.protocolify("./file.foo"), "<content>");
+    expect(fs.writeFileSync.mock.calls).toMatchSnapshot();
+  });
+  it("should write file to s3 bucket", function () {
+    const putObject = jest.fn();
+    jest.spyOn(minio, "Client").mockImplementation(() => ({
+      putObject,
+    }));
+    const config = {
+      endPoint: "_ep",
+      useSSL: false,
+      accessKey: "_ak",
+      secretKey: "_sk",
+    };
+    helpers.writeFile(
+      imgdiff.protocolify("s3://bucket/file.png"),
+      "<content>",
+      config
+    );
+    helpers.writeFile(
+      imgdiff.protocolify("s3://bucket/file.json"),
+      "<content>",
+      config
+    );
+    helpers.writeFile(
+      imgdiff.protocolify("s3://bucket/file.foo"),
+      "<content>",
+      config
+    );
+    expect(putObject.mock.calls).toMatchSnapshot();
+  });
+});
+
 describe("imgdiff", function () {
   beforeEach(() => {
     jest.restoreAllMocks();
@@ -261,7 +299,7 @@ describe("imgdiff", function () {
 
     mockReaddirSync([
       ["dir1", "file1.png", "file2.png"],
-      ["dir2", "file3.txt", "file4.txt"],
+      ["dir2", "file3.png", "file4.txt"],
       ["dir3"],
       [],
     ]);
@@ -281,9 +319,11 @@ describe("imgdiff", function () {
       .mockImplementationOnce(() =>
         Promise.resolve(fakeDataStream(Buffer.from("__data_b__")))
       );
+    const putObject = jest.fn();
     jest.spyOn(minio, "Client").mockImplementation(() => ({
       listObjectsV2,
       getObject,
+      putObject,
     }));
     await imgdiff.exec({
       A: "file://dir1",
@@ -293,7 +333,7 @@ describe("imgdiff", function () {
       s3AccessKey: "ak__test",
       s3SecretKey: "sk__test",
       useSSL: true,
-      write: "./diff",
+      write: "s3://diff-bucket",
     });
     expect(minio.Client).toBeCalledWith({
       accessKey: "ak__test",
@@ -323,6 +363,8 @@ describe("imgdiff", function () {
     await expect(
       DIFFER.batchProcess.mock.results[0].value
     ).resolves.toMatchSnapshot();
+
+    expect(putObject.mock.calls).toMatchSnapshot();
   });
   it("should parse cli options", function () {
     const { parseCLI } = require("../main");

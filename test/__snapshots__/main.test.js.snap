@@ -467,9 +467,30 @@ Object {
       "uri": "file:///dir1/file2.png",
     },
   ],
-  "new": Array [],
+  "new": Array [
+    Object {
+      "bucket": undefined,
+      "keyname": "file3",
+      "path": "/dir1/dir1/file3.png",
+      "uri": "file:///dir1/dir1/file3.png",
+    },
+  ],
   "removed": Array [],
 }
+`;
+
+exports[`imgdiff should call BATCH differ on file:// and s3:// A,B locations and snapshots match  3`] = `
+Array [
+  Array [
+    "diff-bucket",
+    "file3.png",
+    undefined,
+    Object {
+      "Content-Type": "image/png",
+      "x-amz-acl": "public-read",
+    },
+  ],
+]
 `;
 
 exports[`imgdiff should call SINGLE differ on A,B file set 1`] = `
@@ -546,4 +567,52 @@ Object {
   "threshold": 0.1,
   "useSSL": false,
 }
+`;
+
+exports[`writeFile should write file system file 1`] = `
+Array [
+  Array [
+    "/Users/rpolana/etc/Projects/imgdiff/file.png",
+    "<content>",
+  ],
+  Array [
+    "/Users/rpolana/etc/Projects/imgdiff/file.json",
+    "<content>",
+  ],
+  Array [
+    "/Users/rpolana/etc/Projects/imgdiff/file.foo",
+    "<content>",
+  ],
+]
+`;
+
+exports[`writeFile should write file to s3 bucket 1`] = `
+Array [
+  Array [
+    "bucket",
+    "file.png",
+    "<content>",
+    Object {
+      "Content-Type": "image/png",
+      "x-amz-acl": "public-read",
+    },
+  ],
+  Array [
+    "bucket",
+    "file.json",
+    "<content>",
+    Object {
+      "Content-Type": "application/json",
+      "x-amz-acl": "public-read",
+    },
+  ],
+  Array [
+    "bucket",
+    "file.foo",
+    "<content>",
+    Object {
+      "x-amz-acl": "public-read",
+    },
+  ],
+]
 `;

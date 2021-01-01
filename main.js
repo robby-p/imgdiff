@@ -46,6 +46,7 @@ function protocolify(p) {
   return p;
 }
 
+exports.protocolify = protocolify;
 async function exec(_config = {}) {
   const config = {
     ...defaultConfig,
@@ -80,7 +81,6 @@ async function runBatch(config) {
   `);
   if (config.jsonReport) {
     const reportString = JSON.stringify(report, null, 4);
-    // fs.writeFile(config.jsonReport,reportString);
     await writeFile(protocolify(config.jsonReport), reportString, config);
   }
   return report;
