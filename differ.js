@@ -102,7 +102,8 @@ class URIHandle extends Handle {
     super(uri);
     this.path = furi.fileUriToPath(uri);
   }
-  async fetch() {
+  async fetch({ forceFetch = false } = {}) {
+    if (!forceFetch && this.buffer) return this.buffer;
     try {
       this.buffer = await streamToBuffer(await GURI.getUri(this.uri));
       return this.buffer;
@@ -124,7 +125,8 @@ class S3Handle extends Handle {
     this.bucket = bucket;
     this.path = pathSplit.join("/");
   }
-  async fetch() {
+  async fetch({ forceFetch = false } = {}) {
+    if (!forceFetch && this.buffer) return this.buffer;
     this.buffer = await streamToBuffer(
       await this.client.getObject(this.bucket, this.path)
     );
@@ -207,7 +209,7 @@ async function batchProcess(config) {
       report.new.push(HandleA.serialize());
 
       if (config.write) {
-        await saveImg(HandleA.basename, HandleA.buffer);
+        await saveImg(HandleA.basename, await HandleA.fetch());
       }
     } else {
       const HandleB = CollectionB.get(key);

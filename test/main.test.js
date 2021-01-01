@@ -290,7 +290,7 @@ describe("imgdiff", function () {
     });
   });
 
-  it("should call BATCH differ on file:// and s3:// A,B locations and snapshots match ", async function () {
+  it.only("should call BATCH differ on file:// and s3:// A,B locations and snapshots match ", async function () {
     jest.spyOn(DIFFER.PM, "pixelmatch").mockImplementation(() => 0);
     let { DIR } = require("../main");
     DIR.__dirname = "/TestFileSystemPath";
@@ -365,7 +365,10 @@ describe("imgdiff", function () {
     ).resolves.toMatchSnapshot();
 
     expect(putObject.mock.calls).toMatchSnapshot();
+
+    console.log(putObject.mock.calls);
   });
+
   it("should parse cli options", function () {
     const { parseCLI } = require("../main");
     expect(parseCLI(["--foo=foo"])).toMatchObject({

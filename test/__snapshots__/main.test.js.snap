@@ -352,46 +352,32 @@ exports[`imgdiff should call BATCH differ on file:// and s3:// A,B locations and
           116,
           97,
           95,
-          97,
-          95,
-          95,
-        ],
-        "type": "Buffer",
-      },
-    ],
-    Array [
-      Object {
-        "data": Array [
-          95,
-          95,
-          100,
-          97,
-          116,
-          97,
-          95,
-          97,
-          95,
-          95,
-        ],
-        "type": "Buffer",
-      },
-    ],
-    Array [
-      Object {
-        "data": Array [
-          95,
-          95,
-          100,
-          97,
-          116,
-          97,
-          95,
           98,
           95,
           95,
         ],
         "type": "Buffer",
       },
+    ],
+    Array [
+      Object {
+        "data": Array [
+          95,
+          95,
+          100,
+          97,
+          116,
+          97,
+          95,
+          97,
+          95,
+          95,
+        ],
+        "type": "Buffer",
+      },
+    ],
+    Array [
+      undefined,
     ],
     Array [
       Object {
@@ -484,7 +470,21 @@ Array [
   Array [
     "diff-bucket",
     "file3.png",
-    undefined,
+    Object {
+      "data": Array [
+        95,
+        95,
+        100,
+        97,
+        116,
+        97,
+        95,
+        97,
+        95,
+        95,
+      ],
+      "type": "Buffer",
+    },
     Object {
       "Content-Type": "image/png",
       "x-amz-acl": "public-read",
