@@ -2,11 +2,12 @@
 
 const fs = require("./fs");
 const path = require("path");
-const { URIHandle } = require("./differ");
 const DIFFER = require("./differ");
 const { tryParse, diffName, isS3URI, writeFile } = require("./helpers");
-const { log } = require("./helpers");
+const { log, saveImgFactory } = require("./helpers");
+
 const DIR = { __dirname: process.cwd() };
+const { URIHandle } = DIFFER;
 
 exports.DIR = DIR;
 // process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
@@ -17,6 +18,9 @@ const defaultConfig = {
   jsonReport: "",
   A: "",
   B: "",
+  batchCopy: false,
+  from: "",
+  to: "",
   s3EndPoint: "ceph.squarespace.net",
   s3AccessKey: process.env.S3_ACCESS_KEY || "",
   s3SecretKey: process.env.S3_SECRET_KEY || "",
@@ -53,29 +57,50 @@ async function exec(_config = {}) {
     ..._config,
   };
   log.silent(!!_config.silent);
-
-  //make sense of cli params, coercing to file:// as protocol default
-  for (const key of ["A", "B"]) {
-    if (!config[key]) {
+  const protocolifyConfigKey = (key, required = true) => {
+    if (required && !config[key]) {
       throw new Error(` '${key}' not specified, use --${key}=<uri>`);
+    } else {
+      return protocolify(config[key]);
     }
-    config[key] = protocolify(config[key]);
+  };
+
+  if (config.batchCopy) {
+    for (const key of ["from", "to"]) {
+      config[key] = protocolifyConfigKey(key);
+    }
+    return batchCopy(config);
   }
-  if (config.write && typeof config.write === "string") {
-    config.write = protocolify(config.write);
+
+  for (const key of ["A", "B"]) {
+    config[key] = protocolifyConfigKey(key);
   }
+  config.write = config.write
+    ? protocolifyConfigKey("write", false)
+    : config.write;
+
   return config.batch ? runBatch(config) : runSingle(config);
 }
 
+async function batchCopy(config) {
+  const CollectionA = await DIFFER.BatchFilesFactory(
+    config["from"],
+    config
+  ).hydrate();
+  const saveImg = saveImgFactory(config, "to");
+  for (const handle of CollectionA.values()) {
+    await saveImg(handle.basename, await handle.fetch());
+  }
+}
 async function runBatch(config) {
-  const getkeynames = (handles) =>
+  const getKeyNames = (handles) =>
     handles.map((h) => `'${h.keyname}'`).join(",\n           ");
   const report = await DIFFER.batchProcess(config);
   log.info(`📊 Batch Total Report
-    match: [${getkeynames(report.match)}]
-    diff: [${getkeynames(report.diff)}]
-    removed: [${getkeynames(report.removed)}]
-    new: [${getkeynames(report.new)}]
+    match: [${getKeyNames(report.match)}]
+    diff: [${getKeyNames(report.diff)}]
+    removed: [${getKeyNames(report.removed)}]
+    new: [${getKeyNames(report.new)}]
 
  ${config.jsonReport ? `👉 written to: ${config.jsonReport}` : ""}
   `);
@@ -85,6 +110,7 @@ async function runBatch(config) {
   }
   return report;
 }
+exports.batchCopy = batchCopy;
 
 async function runSingle(config) {
   if (isS3URI(config.A) || isS3URI(config.B)) {

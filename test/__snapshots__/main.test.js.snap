@@ -1,5 +1,130 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`--batchCopy should copy screenshots from --from=<file://uri> to --to=<s3://uri> 1`] = `
+Array [
+  Array [
+    "bucket1",
+    "master/dir1_file1.png",
+    Object {
+      "data": Array [
+        95,
+        95,
+        102,
+        105,
+        108,
+        101,
+        95,
+        99,
+        111,
+        110,
+        116,
+        101,
+        110,
+        116,
+        115,
+        95,
+        95,
+      ],
+      "type": "Buffer",
+    },
+    Object {
+      "Content-Type": "image/png",
+      "x-amz-acl": "public-read",
+    },
+  ],
+  Array [
+    "bucket1",
+    "master/dir1_file2.png",
+    Object {
+      "data": Array [
+        95,
+        95,
+        102,
+        105,
+        108,
+        101,
+        95,
+        99,
+        111,
+        110,
+        116,
+        101,
+        110,
+        116,
+        115,
+        95,
+        95,
+      ],
+      "type": "Buffer",
+    },
+    Object {
+      "Content-Type": "image/png",
+      "x-amz-acl": "public-read",
+    },
+  ],
+  Array [
+    "bucket1",
+    "master/root_file1.png",
+    Object {
+      "data": Array [
+        95,
+        95,
+        102,
+        105,
+        108,
+        101,
+        95,
+        99,
+        111,
+        110,
+        116,
+        101,
+        110,
+        116,
+        115,
+        95,
+        95,
+      ],
+      "type": "Buffer",
+    },
+    Object {
+      "Content-Type": "image/png",
+      "x-amz-acl": "public-read",
+    },
+  ],
+  Array [
+    "bucket1",
+    "master/root_file2.png",
+    Object {
+      "data": Array [
+        95,
+        95,
+        102,
+        105,
+        108,
+        101,
+        95,
+        99,
+        111,
+        110,
+        116,
+        101,
+        110,
+        116,
+        115,
+        95,
+        95,
+      ],
+      "type": "Buffer",
+    },
+    Object {
+      "Content-Type": "image/png",
+      "x-amz-acl": "public-read",
+    },
+  ],
+]
+`;
+
 exports[`imgdiff should call BATCH differ on file:// A,B locations  1`] = `
 Object {
   "BufferDiff": Object {
@@ -28,10 +153,10 @@ Object {
 exports[`imgdiff should call BATCH differ on file:// A,B locations  2`] = `
 Array [
   Array [
-    "Batch file system processing for for file://dirA_1",
+    "Batch file system processing for file://dirA_1",
   ],
   Array [
-    "Batch file system processing for for file:///TestFileSystemPath/dirB_2",
+    "Batch file system processing for file:///TestFileSystemPath/dirB_2",
   ],
   Array [
     "

@@ -33,6 +33,31 @@ const mockReaddirSync = (dirStruct) => {
   });
 };
 
+describe("--batchCopy", function () {
+  it("should copy screenshots from --from=<file://uri> to --to=<s3://uri>", async function () {
+    mockReaddirSync([
+      ["dir1", "root_file1.png", "root_file2.png"],
+      ["dir2", "dir1_file1.png", "dir1_file2.png"],
+      ["dir3"],
+      [],
+    ]);
+    DIFFER.GURI.getUri = jest.fn(() =>
+      fakeDataStream(Buffer.from("__file_contents__"))
+    );
+
+    const putObject = jest.fn();
+    jest.spyOn(minio, "Client").mockImplementation(() => ({
+      putObject,
+    }));
+    await imgdiff.exec({
+      batchCopy: true,
+      from: "file://dir1",
+      to: "s3://bucket1/master",
+    });
+    expect(putObject.mock.calls).toMatchSnapshot();
+  });
+});
+
 describe("recurseDir", function () {
   it("should recursively list a directory", function () {
     mockReaddirSync([
@@ -290,7 +315,7 @@ describe("imgdiff", function () {
     });
   });
 
-  it.only("should call BATCH differ on file:// and s3:// A,B locations and snapshots match ", async function () {
+  it("should call BATCH differ on file:// and s3:// A,B locations and snapshots match ", async function () {
     jest.spyOn(DIFFER.PM, "pixelmatch").mockImplementation(() => 0);
     let { DIR } = require("../main");
     DIR.__dirname = "/TestFileSystemPath";
@@ -365,8 +390,6 @@ describe("imgdiff", function () {
     ).resolves.toMatchSnapshot();
 
     expect(putObject.mock.calls).toMatchSnapshot();
-
-    console.log(putObject.mock.calls);
   });
 
   it("should parse cli options", function () {

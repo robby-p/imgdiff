@@ -2,7 +2,7 @@ const fs = require("./fs");
 const Minio = require("minio");
 const furi = { fileUriToPath: require("file-uri-to-path") };
 const path = require("path");
-const { writeFile } = require("./helpers");
+const { saveImgFactory } = require("./helpers");
 const PM = { pixelmatch: require("pixelmatch") };
 const png = { PNG: require("pngjs").PNG };
 const GURI = { getUri: require("get-uri") };
@@ -50,7 +50,7 @@ async function differ({ HandleA, HandleB, threshold }) {
 }
 function BatchFilesFactory(uri, config) {
   if (isFileURI(uri)) {
-    log.info(`Batch file system processing for for ${uri}`);
+    log.info(`Batch file system processing for ${uri}`);
     return new FileBatch({ ...config, uri });
   } else {
     if (isS3URI(uri)) {
@@ -58,7 +58,7 @@ function BatchFilesFactory(uri, config) {
       return new S3Batch({ ...config, uri });
     }
     throw new Error(
-      "Invalid URI, only file:// and s3:// uris are supported for batch processing"
+      `Invalid URI, only file:// and s3:// uris are supported for batch processing \n given: ${uri} `
     );
   }
 }
@@ -162,6 +162,7 @@ class FileBatch extends BaseBatchFiles {
   constructor(args) {
     super(args);
     this.path = furi.fileUriToPath(args.uri);
+    return this;
   }
   async list() {
     return Promise.resolve(
@@ -183,18 +184,9 @@ async function batchProcess(config) {
     removed: [],
   };
 
-  const saveImg = async (name, buffer) => {
-    const fullPath = `${config.write.replace(/\/$/, "")}/${name.replace(
-      /^\//,
-      ""
-    )}`;
-    log.info(`Saving ${name} to ${fullPath}`);
-    await writeFile(fullPath, buffer, config);
-  };
+  const saveImg = saveImgFactory(config);
   const [CollectionA, CollectionB] = await Promise.all(
-    ["A", "B"].map(async (k) => {
-      return BatchFilesFactory(config[k], config).hydrate();
-    })
+    ["A", "B"].map((key) => BatchFilesFactory(config[key], config).hydrate())
   );
   for (const key of CollectionB.keys()) {
     if (!CollectionA.has(key)) {

@@ -100,6 +100,17 @@ async function writeFile(uriPath, content, config) {
   }
 }
 
+const saveImgFactory = (config, outputKeying = "write") => async (
+  name,
+  buffer
+) => {
+  const fullPath = `${config[outputKeying].replace(/\/$/, "")}/${name.replace(
+    /^\//,
+    ""
+  )}`;
+  log.info(`Saving ${name} to ${fullPath}`);
+  await writeFile(fullPath, buffer, config);
+};
 module.exports = {
   getBasename,
   getKeyname,
@@ -107,6 +118,7 @@ module.exports = {
   isFileURI,
   log,
   asyncEvent,
+  saveImgFactory,
   streamToBuffer,
   diffName,
   isNonProtocol,
