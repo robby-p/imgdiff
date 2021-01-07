@@ -230,8 +230,8 @@ describe("imgdiff", function () {
     const listObjectsV2 = jest.fn(() =>
       Promise.resolve(
         fakeDataStream(
-          { name: "file1.png", size: 1024 },
-          { name: "file2.png", size: 1024 }
+          { name: "dir/file1.png", size: 1024 },
+          { name: "dir/file2.png", size: 1024 }
         )
       )
     );
@@ -261,6 +261,7 @@ describe("imgdiff", function () {
       jsonReport: "s3://test-bucket/output.json",
       write: "s3://diff-bucket/files/",
     });
+
     expect(minio.Client).toBeCalledWith({
       accessKey: "ak__test",
       endPoint: "ep__test",
@@ -331,8 +332,8 @@ describe("imgdiff", function () {
     const listObjectsV2 = jest.fn(() =>
       Promise.resolve(
         fakeDataStream(
-          { name: "file1.png", size: 1024 },
-          { name: "file2.png", size: 1024 }
+          { name: "dir/file1.png", size: 1024 },
+          { name: "dir/file2.png", size: 1024 }
         )
       )
     );
@@ -350,6 +351,7 @@ describe("imgdiff", function () {
       getObject,
       putObject,
     }));
+
     await imgdiff.exec({
       A: "file://dir1",
       B: "s3://test--bucket/dir",
@@ -360,6 +362,7 @@ describe("imgdiff", function () {
       useSSL: true,
       write: "s3://diff-bucket",
     });
+
     expect(minio.Client).toBeCalledWith({
       accessKey: "ak__test",
       endPoint: "ep__test",

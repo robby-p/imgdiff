@@ -136,7 +136,7 @@ class S3Handle extends Handle {
 class S3Batch extends BaseBatchFiles {
   constructor(args) {
     super(args);
-    this.bucket = args.uri.split("s3://")[1];
+    this.bucket = args.uri.split("s3://")[1].split("/")[0];
     if (this.bucket.includes("_")) {
       throw new Error("Bucket names cannot contain underscores");
     }
