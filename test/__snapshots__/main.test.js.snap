@@ -313,6 +313,7 @@ Object {
     "diff": 0,
     "match": 2,
     "new": 0,
+    "removed": 0,
     "total": 2,
   },
 }
@@ -344,7 +345,8 @@ Array [
         \\"new\\": 0,
         \\"match\\": 2,
         \\"diff\\": 0,
-        \\"total\\": 2
+        \\"total\\": 2,
+        \\"removed\\": 0
     }
 }",
   ],
@@ -372,7 +374,8 @@ Array [
         \\"new\\": 0,
         \\"match\\": 2,
         \\"diff\\": 0,
-        \\"total\\": 2
+        \\"total\\": 2,
+        \\"removed\\": 0
     }
 }",
   ],
@@ -513,6 +516,7 @@ Object {
     "diff": 2,
     "match": 0,
     "new": 0,
+    "removed": 0,
     "total": 2,
   },
 }
@@ -645,6 +649,7 @@ Object {
     "diff": 0,
     "match": 2,
     "new": 1,
+    "removed": 0,
     "total": 3,
   },
 }

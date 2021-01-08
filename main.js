@@ -101,6 +101,7 @@ async function runBatch(config) {
     match: report.match.length,
     diff: report.diff.length,
     total: report.new.length + report.match.length + report.diff.length,
+    removed: report.removed.length,
   };
   log.info(`📊 Batch Total Report
     total: [${report.stats.total}]
