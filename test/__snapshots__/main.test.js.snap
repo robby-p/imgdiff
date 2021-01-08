@@ -201,6 +201,9 @@ Array [
   Array [
     "👉 written to: test_json_report.json",
   ],
+  Array [
+    "👉 written to: test2.json",
+  ],
 ]
 `;
 
@@ -310,8 +313,9 @@ Object {
 
 exports[`imgdiff should call BATCH differ on file:// A,B locations  8`] = `
 Array [
-  "/TestFileSystemPath/test_json_report.json",
-  "{
+  Array [
+    "/TestFileSystemPath/test_json_report.json",
+    "{
     \\"new\\": [],
     \\"diff\\": [],
     \\"match\\": [
@@ -330,6 +334,29 @@ Array [
     ],
     \\"removed\\": []
 }",
+  ],
+  Array [
+    "/TestFileSystemPath/test2.json",
+    "{
+    \\"new\\": [],
+    \\"diff\\": [],
+    \\"match\\": [
+        {
+            \\"uri\\": \\"file:///dirA_1/file1.png\\",
+            \\"keyname\\": \\"file1\\",
+            \\"path\\": \\"/dirA_1/file1.png\\",
+            \\"pixels\\": 0
+        },
+        {
+            \\"uri\\": \\"file:///dirA_1/file2.png\\",
+            \\"keyname\\": \\"file2\\",
+            \\"path\\": \\"/dirA_1/file2.png\\",
+            \\"pixels\\": 0
+        }
+    ],
+    \\"removed\\": []
+}",
+  ],
 ]
 `;
 

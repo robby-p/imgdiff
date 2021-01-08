@@ -195,7 +195,7 @@ describe("imgdiff", function () {
       B: "dirB_2",
       silent: false,
       batch: true,
-      jsonReport: "test_json_report.json",
+      jsonReport: "test_json_report.json,test2.json",
     });
     expect(helpers.log._silent).toBe(false);
     await expect(
@@ -210,7 +210,7 @@ describe("imgdiff", function () {
     await expect(
       DIFFER.batchProcess.mock.results[0].value
     ).resolves.toMatchSnapshot();
-    expect(fs.writeFileSync.mock.calls[0]).toMatchSnapshot();
+    expect(fs.writeFileSync.mock.calls).toMatchSnapshot();
   });
 
   it("should call BATCH differ on file:// and s3:// A,B locations and snapshots do not match ", async function () {
