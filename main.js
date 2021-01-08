@@ -102,11 +102,17 @@ async function runBatch(config) {
     removed: [${getKeyNames(report.removed)}]
     new: [${getKeyNames(report.new)}]
 
- ${config.jsonReport ? `👉 written to: ${config.jsonReport}` : ""}
   `);
   if (config.jsonReport) {
     const reportString = JSON.stringify(report, null, 4);
-    await writeFile(protocolify(config.jsonReport), reportString, config);
+    const jsonReportFiles = config.jsonReport
+      .split(",")
+      .map((jr) => jr.trim())
+      .filter(Boolean);
+    for (const jsonReport of jsonReportFiles) {
+      await writeFile(protocolify(jsonReport), reportString, config);
+      log.info(`👉 written to: ${jsonReport}`);
+    }
   }
   return report;
 }

@@ -196,8 +196,10 @@ Array [
     removed: []
     new: []
 
- 👉 written to: test_json_report.json
   ",
+  ],
+  Array [
+    "👉 written to: test_json_report.json",
   ],
 ]
 `;
