@@ -95,8 +95,15 @@ async function batchCopy(config) {
 async function runBatch(config) {
   const getKeyNames = (handles) =>
     handles.map((h) => `'${h.keyname}'`).join(",\n           ");
-  const report = await DIFFER.batchProcess(config);
+  let report = await DIFFER.batchProcess(config);
+  report.stats = {
+    new: report.new.length,
+    match: report.match.length,
+    diff: report.diff.length,
+    total: report.new.length + report.match.length + report.diff.length,
+  };
   log.info(`📊 Batch Total Report
+    total: [${report.stats.total}]
     match: [${getKeyNames(report.match)}]
     diff: [${getKeyNames(report.diff)}]
     removed: [${getKeyNames(report.removed)}]

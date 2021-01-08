@@ -190,6 +190,7 @@ Array [
   ],
   Array [
     "📊 Batch Total Report
+    total: [2]
     match: ['file1',
            'file2']
     diff: []
@@ -308,6 +309,12 @@ Object {
   ],
   "new": Array [],
   "removed": Array [],
+  "stats": Object {
+    "diff": 0,
+    "match": 2,
+    "new": 0,
+    "total": 2,
+  },
 }
 `;
 
@@ -332,7 +339,13 @@ Array [
             \\"pixels\\": 0
         }
     ],
-    \\"removed\\": []
+    \\"removed\\": [],
+    \\"stats\\": {
+        \\"new\\": 0,
+        \\"match\\": 2,
+        \\"diff\\": 0,
+        \\"total\\": 2
+    }
 }",
   ],
   Array [
@@ -354,7 +367,13 @@ Array [
             \\"pixels\\": 0
         }
     ],
-    \\"removed\\": []
+    \\"removed\\": [],
+    \\"stats\\": {
+        \\"new\\": 0,
+        \\"match\\": 2,
+        \\"diff\\": 0,
+        \\"total\\": 2
+    }
 }",
   ],
 ]
@@ -490,6 +509,12 @@ Object {
   "match": Array [],
   "new": Array [],
   "removed": Array [],
+  "stats": Object {
+    "diff": 2,
+    "match": 0,
+    "new": 0,
+    "total": 2,
+  },
 }
 `;
 
@@ -616,6 +641,12 @@ Object {
     },
   ],
   "removed": Array [],
+  "stats": Object {
+    "diff": 0,
+    "match": 2,
+    "new": 1,
+    "total": 3,
+  },
 }
 `;
 
