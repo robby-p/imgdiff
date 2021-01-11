@@ -214,6 +214,7 @@ async function batchProcess(config) {
         if (config.write && config.diff) {
           const diffFileName = diffName(config.diff, HandleA.basename);
           await saveImg(diffFileName, BufferDiff);
+          await saveImg(HandleA.basename, await HandleA.fetch()); //saves new version
         }
         report.diff.push({ ...HandleA.serialize(), pixels });
       } else {

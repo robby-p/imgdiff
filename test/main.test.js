@@ -295,25 +295,7 @@ describe("imgdiff", function () {
     expect(putObject.mock.calls[0][0]).toEqual("diff-bucket");
     expect(putObject.mock.calls[0][1]).toEqual("files/file1.diff.png");
 
-    expect(JSON.parse(putObject.mock.calls[2][2])).toMatchObject({
-      new: [],
-      diff: [
-        {
-          uri: "file:///dir1/file1.png",
-          keyname: "file1",
-          path: "/dir1/file1.png",
-          pixels: 32,
-        },
-        {
-          uri: "file:///dir1/file2.png",
-          keyname: "file2",
-          path: "/dir1/file2.png",
-          pixels: 32,
-        },
-      ],
-      match: [],
-      removed: [],
-    });
+    expect(putObject.mock.calls[2][2]).toMatchSnapshot();
   });
 
   it("should call BATCH differ on file:// and s3:// A,B locations and snapshots match ", async function () {

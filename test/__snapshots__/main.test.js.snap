@@ -420,21 +420,7 @@ exports[`imgdiff should call BATCH differ on file:// and s3:// A,B locations and
       },
     ],
     Array [
-      Object {
-        "data": Array [
-          95,
-          95,
-          100,
-          97,
-          116,
-          97,
-          95,
-          98,
-          95,
-          95,
-        ],
-        "type": "Buffer",
-      },
+      undefined,
     ],
     Array [
       Object {
@@ -519,6 +505,27 @@ Object {
     "removed": 0,
     "total": 2,
   },
+}
+`;
+
+exports[`imgdiff should call BATCH differ on file:// and s3:// A,B locations and snapshots do not match  3`] = `
+Object {
+  "data": Array [
+    95,
+    95,
+    100,
+    97,
+    116,
+    97,
+    95,
+    100,
+    105,
+    102,
+    102,
+    95,
+    95,
+  ],
+  "type": "Buffer",
 }
 `;
 
