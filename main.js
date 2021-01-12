@@ -13,7 +13,8 @@ exports.DIR = DIR;
 // process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
 const defaultConfig = {
-  diff: "[name].diff.png",
+  diffExt: "diff.png",
+  diff: true,
   write: false,
   jsonReport: "",
   A: "",

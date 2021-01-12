@@ -293,9 +293,7 @@ describe("imgdiff", function () {
     ).resolves.toMatchSnapshot();
 
     expect(putObject.mock.calls[0][0]).toEqual("diff-bucket");
-    expect(putObject.mock.calls[0][1]).toEqual("files/file1.diff.png");
-
-    expect(putObject.mock.calls[2][2]).toMatchSnapshot();
+    expect(putObject.mock.calls).toMatchSnapshot();
   });
 
   it("should call BATCH differ on file:// and s3:// A,B locations and snapshots match ", async function () {

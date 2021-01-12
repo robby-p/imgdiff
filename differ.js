@@ -1,7 +1,6 @@
 const fs = require("./fs");
 const Minio = require("minio");
 const furi = { fileUriToPath: require("file-uri-to-path") };
-const path = require("path");
 const { saveImgFactory } = require("./helpers");
 const PM = { pixelmatch: require("pixelmatch") };
 const png = { PNG: require("pngjs").PNG };
@@ -38,7 +37,7 @@ async function differ({ HandleA, HandleB, threshold }) {
   const match = pixels === 0;
   log.info(`${match ? "✅" : "🚫"} Result:
     match: ${match}
-    pixels: ${pixels}
+      pixels: ${pixels}
 
   `);
 
@@ -155,7 +154,9 @@ class S3Batch extends BaseBatchFiles {
     const objList = await asyncEvent(
       await this.client.listObjectsV2(this.bucket, "", true, "")
     ).then((objs) => objs.map(({ name }) => `s3://${this.bucket}/${name}`));
-    return objList.filter((obj) => obj.endsWith(".png"));
+    return objList.filter(
+      (obj) => obj.endsWith(".png") && !obj.endsWith(".diff.png")
+    );
   }
 }
 class FileBatch extends BaseBatchFiles {
@@ -167,7 +168,7 @@ class FileBatch extends BaseBatchFiles {
   async list() {
     return Promise.resolve(
       Array.from(recurseDir(this.path))
-        .filter((f) => f.endsWith(".png"))
+        .filter((f) => f.endsWith(".png") && !f.endsWith(".diff.png"))
         .map((f) => `file://${f}`)
     );
   }
@@ -196,13 +197,13 @@ async function batchProcess(config) {
   }
   for (const key of CollectionA.keys()) {
     const HandleA = CollectionA.get(key);
-    if (!CollectionB.has(key)) {
-      // log.info(`Unsymmetrical file found ${key}`);
-      report.new.push(HandleA.serialize());
 
-      if (config.write) {
-        await saveImg(HandleA.basename, await HandleA.fetch());
-      }
+    if (config.write) {
+      //Always save image if config.write
+      await saveImg(HandleA.basename, await HandleA.fetch());
+    }
+    if (!CollectionB.has(key)) {
+      report.new.push(HandleA.serialize());
     } else {
       const HandleB = CollectionB.get(key);
       const { BufferDiff, match, pixels } = await Differ.differ({
@@ -212,9 +213,8 @@ async function batchProcess(config) {
       });
       if (!match) {
         if (config.write && config.diff) {
-          const diffFileName = diffName(config.diff, HandleA.basename);
+          const diffFileName = diffName(config.diffExt, HandleA.basename);
           await saveImg(diffFileName, BufferDiff);
-          await saveImg(HandleA.basename, await HandleA.fetch()); //saves new version
         }
         report.diff.push({ ...HandleA.serialize(), pixels });
       } else {
@@ -222,6 +222,7 @@ async function batchProcess(config) {
       }
     }
   }
+  report.set = [].concat(report.match, report.new);
   return report;
 }
 

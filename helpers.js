@@ -42,8 +42,8 @@ function streamToBuffer(stream) {
   return asyncEvent(stream).then((chunks) => Buffer.concat(chunks));
 }
 
-function diffName(pattern, name) {
-  return pattern.replace("[name]", name.replace(/.png$/, ""));
+function diffName(diffExt, name) {
+  return `${name}.${diffExt}`;
 }
 
 function isS3URI(uri) {
