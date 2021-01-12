@@ -43,7 +43,7 @@ function streamToBuffer(stream) {
 }
 
 function diffName(diffExt, name) {
-  return `${name}.${diffExt}`;
+  return `${name.replace(/.png$/, "")}.${diffExt}`;
 }
 
 function isS3URI(uri) {
