@@ -135,7 +135,9 @@ class S3Handle extends Handle {
 class S3Batch extends BaseBatchFiles {
   constructor(args) {
     super(args);
-    this.bucket = args.uri.split("s3://")[1].split("/")[0];
+    const [bucket, ...prefix] = args.uri.split("s3://")[1].split("/");
+    this.bucket = bucket;
+    this.prefix = prefix.filter(Boolean).join("/");
     if (this.bucket.includes("_")) {
       throw new Error("Bucket names cannot contain underscores");
     }
@@ -152,7 +154,7 @@ class S3Batch extends BaseBatchFiles {
   }
   async list() {
     const objList = await asyncEvent(
-      await this.client.listObjectsV2(this.bucket, "", true, "")
+      await this.client.listObjectsV2(this.bucket, this.prefix, true, "")
     ).then((objs) => objs.map(({ name }) => `s3://${this.bucket}/${name}`));
     return objList.filter(
       (obj) => obj.endsWith(".png") && !obj.endsWith(".diff.png")
