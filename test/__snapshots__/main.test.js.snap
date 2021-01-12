@@ -580,7 +580,7 @@ Array [
   ],
   Array [
     "diff-bucket",
-    "files/file1.png.diff.png",
+    "files/file1.diff.png",
     Object {
       "data": Array [
         95,
@@ -615,7 +615,7 @@ Array [
   ],
   Array [
     "diff-bucket",
-    "files/file2.png.diff.png",
+    "files/file2.diff.png",
     Object {
       "data": Array [
         95,
